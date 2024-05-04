@@ -1,6 +1,6 @@
-const StringParser = require('./StringParser')
-const ArrayParser = require('./ArrayParser')
-const BulkStringParser = require('./BulkStringParser')
+const StringParser = require('./stringParser')
+const ArrayParser = require('./arrayParser')
+const BulkStringParser = require('./bulkStringParser')
 
 module.exports = {
   StringParser,

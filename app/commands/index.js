@@ -1,6 +1,6 @@
-const Echo = require('./Echo');
-const Ping = require('./Ping');
-const Command = require('./Command');
+const Echo = require('./echo');
+const Ping = require('./ping');
+const Command = require('./command');
 
 module.exports = {
   Echo, 

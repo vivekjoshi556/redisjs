@@ -1,5 +1,5 @@
 const net = require("net");
-const Parser = require("./Parser");
+const Parser = require("./parser");
 const Runner = require("./Runner");
 
 // Uncomment this block to pass the first stage

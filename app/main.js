@@ -1,8 +1,11 @@
 const net = require("net");
-const Parser = require("./parser");
+const Parser = require("./Parser");
 const Runner = require("./Runner");
+const Store = require("./Store");
 
-// Uncomment this block to pass the first stage
+// Redis Store
+const store = new Store({});
+
 const server = net.createServer((connection) => {
 	const parser = new Parser();
 	const runner = new Runner();

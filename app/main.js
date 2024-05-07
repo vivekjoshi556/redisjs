@@ -3,6 +3,14 @@ const Parser = require("./Parser");
 const Runner = require("./Runner");
 const Store = require("./Store");
 
+const config = {
+	port: 6379
+}
+
+let portIdx = process.argv.indexOf('--port')
+if(portIdx !== -1) 
+	config.port = process.argv[portIdx + 1]
+
 // Redis Store
 const store = new Store({});
 
@@ -22,4 +30,4 @@ const server = net.createServer((connection) => {
 	});
 });
 
-server.listen(6379, "127.0.0.1");
+server.listen(config.port, "127.0.0.1");

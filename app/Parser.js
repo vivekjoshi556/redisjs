@@ -17,7 +17,7 @@ module.exports = class Parser {
 		if(RESPTypes[type] === undefined) throw new Error('Unknown Type');
 		
 		let parser = new RESPTypes[type](RESPTypes);
-		let { result } = parser.parse(lines, 0)
+		let { result } = parser.parse(lines, 0);
 
 		return result;
 	}

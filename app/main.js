@@ -2,14 +2,10 @@ const net = require("net");
 const Parser = require("./Parser");
 const Runner = require("./Runner");
 const Store = require("./Store");
+const Config = require("./Config");
 
-const config = {
-	port: 6379
-}
-
-let portIdx = process.argv.indexOf('--port')
-if(portIdx !== -1) 
-	config.port = process.argv[portIdx + 1]
+const config = new Config(process.argv);
+console.log(config)
 
 // Redis Store
 const store = new Store({});

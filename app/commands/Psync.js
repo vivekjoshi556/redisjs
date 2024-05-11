@@ -1,3 +1,4 @@
+const Config = require("../Config");
 const { StringParser } = require("../parser/");
 
 module.exports = class Psync { 
@@ -8,6 +9,7 @@ module.exports = class Psync {
       section = commands[1];
 
     let parser = new StringParser();
-    return parser.serialize(`FULLRESYNC <REPL_ID> 0`);
+    const config = new Config();
+    return parser.serialize(`FULLRESYNC ${config.replication.master_replid} 0`);
   }
 }

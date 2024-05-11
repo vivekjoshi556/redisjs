@@ -1,4 +1,4 @@
-const {Echo, Ping, Command, Set, Get, Info} = require('./commands/');
+const {Echo, Ping, Command, Set, Get, Info, ReplConf, Psync} = require('./commands/');
 
 const commandFactory = {
   "set": Set,
@@ -7,6 +7,8 @@ const commandFactory = {
   "ping": Ping,
   "info": Info,
   "command": Command,
+  "replconf": ReplConf,
+  "psync": Psync,
 }
 
 module.exports = class Runner {

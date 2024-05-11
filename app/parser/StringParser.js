@@ -1,6 +1,6 @@
 module.exports = class StringParser {
-  parse() {
-    // 
+  parse(lines, at) {
+    return lines[at].substring(1);
   }
 
   serialize(str) {

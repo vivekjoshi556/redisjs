@@ -3,6 +3,8 @@ const Set = require('./Set');
 const Echo = require('./Echo');
 const Ping = require('./Ping');
 const Info = require('./Info');
+const Psync = require('./Psync');
+const ReplConf = require('./ReplConf');
 const Command = require('./Command');
 
 module.exports = {
@@ -11,5 +13,7 @@ module.exports = {
   Echo, 
   Ping,
   Info,
-  Command
+  Command,
+  ReplConf,
+  Psync
 }

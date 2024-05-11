@@ -16,5 +16,11 @@ module.exports = class Info {
 
 function getReplicationSection(config) {
   let parser = new BulkStringParser();
-  return parser.serialize(`role:${config.replication.role}`);
+  let result = "";
+  for(let key in config.replication) {
+    result += key + ":" + config.replication[key] + "\n";
+  }
+  
+  result = result.trim();
+  return parser.serialize(result);
 }

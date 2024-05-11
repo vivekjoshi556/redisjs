@@ -5,10 +5,9 @@ const Store = require("./Store");
 const Config = require("./Config");
 
 const config = new Config(process.argv);
-console.log(config)
 
 // Redis Store
-const store = new Store({});
+const _ = new Store({});
 
 const server = net.createServer((connection) => {
 	const parser = new Parser();

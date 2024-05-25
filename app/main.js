@@ -6,7 +6,6 @@ const Config = require("./Config");
 const { ArrayParser } = require("./parser/");
 
 const config = new Config(process.argv);
-// console.log(config);
 if(config.replication.role === "slave") {
 	const socket = net.createConnection(config.replication.port);
 	const parser = new ArrayParser();
@@ -16,7 +15,7 @@ if(config.replication.role === "slave") {
 	socket.write(parser.serialize(handshake[0]));
 
 	socket.on('data', function (data) {
-		console.log(data.toString());
+		console.log("Replica Received Data:", data.toString());
 		if(at < handshake.length) {
 			socket.write(parser.serialize(handshake[at]));
 			at++;
@@ -34,9 +33,16 @@ const server = net.createServer((connection) => {
 	connection.on("data", (input) => {
 		const data = input.toString();
 		const commands = parser.parse(data);
-		const result = runner.execute(commands);
+		let result = runner.execute(commands);
 
-		connection.write(result);
+		// Handle multiple responses.
+		if(!Array.isArray(result)) {
+			result = [result];
+		}
+
+		for(let item of result) {
+			connection.write(item);
+		}
 	});
 
 	connection.on("close", () => {
@@ -45,3 +51,6 @@ const server = net.createServer((connection) => {
 });
 
 server.listen(config.port, "127.0.0.1");
+
+
+// ./spawn_redis_server.sh --port 6380 --replicaof localhost 6379

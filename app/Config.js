@@ -33,11 +33,23 @@ module.exports = class Config {
     // Looking for replica
     let replicaIdx = args.indexOf('--replicaof')
     if(replicaIdx !== -1) {
-      this.replication = args[replicaIdx + 1];
+      let splitIdx = args[replicaIdx + 1].indexOf(' ')
+      let host, port;
+      
+      if(splitIdx === -1) {
+        // --replicaOf <hostname> <port>
+        host = args[replicaIdx + 1];
+        port = args[replicaIdx + 2];
+      }
+      else {
+        // --replicaOf "<hostname> <port>"
+        [host, port] = args[replicaIdx + 1].split(' ')
+      }
+      
       this.replication = {
-        role: 'slave',
-        host: args[replicaIdx + 1],
-        port: parseInt(args[replicaIdx + 2]),
+        role: 'slave', 
+        host,
+        port: parseInt(port),
       }
     }
   }

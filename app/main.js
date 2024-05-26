@@ -47,6 +47,7 @@ if(config.replication.role === "slave") {
 			try {
 				let {command, input} = commands[i];
 				let result = runner.execute(command, input, '');
+				config.replication.slave_repl_offset += input.length;
 				if(command[0].toLowerCase() === 'replconf') {
 					socket.write(result);
 				}
@@ -68,6 +69,7 @@ const server = net.createServer((connection) => {
 			for(let {command, input} of commands) {
 				let result = runner.execute(command, input, connection);
 
+				console.log(command);
 				// Handle multiple responses for each command.
 				if(!Array.isArray(result)) {
 					result = [result];

@@ -1,3 +1,4 @@
+const Config = require("../Config");
 const { StringParser, ArrayParser } = require("../parser/");
 
 module.exports = class ReplConf { 
@@ -14,7 +15,8 @@ module.exports = class ReplConf {
     }
     else if(subcommand === 'getack') {
       let parser = new ArrayParser();
-      return parser.serialize(["REPLCONF", "ACK", "0"])
+      const config = new Config();
+      return parser.serialize(["REPLCONF", "ACK", `${config.replication.slave_repl_offset}`])
     }
     else if(subcommand === 'ack') {
       return null;

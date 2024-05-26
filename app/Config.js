@@ -50,6 +50,7 @@ module.exports = class Config {
         role: 'slave', 
         host,
         port: parseInt(port),
+        slave_repl_offset: 0
       }
     }
   }

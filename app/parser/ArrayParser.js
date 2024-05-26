@@ -25,7 +25,7 @@ module.exports = class ArrayParser {
 
   serialize(data) {
     if(!Array.isArray(data)) {
-      throw new Error("Types must be Array for ArrayParser")
+      throw new Error(`Types must be Array for ArrayParser got: ${data}`)
     }
 
     let parser = new BulkStringParser();

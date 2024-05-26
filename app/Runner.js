@@ -17,27 +17,28 @@ const commandFactory = {
 const writeCommands = ["set", "del"]
 
 module.exports = class Runner {
-  execute(commands, input, connection) {
-    let command = commands[0].toLowerCase();
+  execute(command, input, connection) {
+    let commandName = command[0].toLowerCase();
 
     // Check for a replica
-		if(command === 'psync') {
+    if(commandName === 'psync') {
 			const replica = new Replica();
 			replica.addReplica(connection);
 		}
     
     // Check if needs to be propagated to replicas.
-    if(writeCommands.indexOf(command) !== -1) {
+    if(writeCommands.indexOf(commandName) !== -1) {
       replicateEvent.emit('replicate', input);
     }
 
-    command = commandFactory[command];
+    if(!commandFactory[commandName]) {
+      throw new Error(`Command Not Found: ${commandName}`);
+    }
 
-    if(!command) 
-      throw new Error('Command Not Found');
-    let commandRunner = new command();
-    let result = commandRunner.execute(commands);
-    return result
+    let commandRunner = commandFactory[commandName];
+    let cmdRunner = new commandRunner();
+    
+    return cmdRunner.execute(command);
   }
 }
 

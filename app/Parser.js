@@ -8,16 +8,28 @@ const RESPTypes = {
 
 module.exports = class Parser {
 	parse(data) {
-		if(data[0] !== '*') throw new Error('Invalid string received')
+		let result = [], next = 0;
 
 		const lines = data.split('\r\n');
-		lines.pop();
+		if(lines[lines.length - 1].trim() === '') {
+			lines.pop();
+		}
 
-		let type = lines[0][0];
-		if(RESPTypes[type] === undefined) throw new Error('Unknown Type');
-		
-		let parser = new RESPTypes[type](RESPTypes);
-		let { result } = parser.parse(lines, 0);
+		// For handling inputs with multiple commands.
+		while(next < lines.length) {
+			let type = lines[next][0];
+			if(RESPTypes[type] === undefined) 
+				throw new Error('Unknown Type');
+			
+			let parser = new RESPTypes[type](RESPTypes);
+			let { result: r, next: n } = parser.parse(lines, next);
+			result.push({
+				input: lines.slice(next, n).join('\r\n') + '\r\n',
+				command: r,
+			});
+			
+			next = n;
+		}
 
 		return result;
 	}

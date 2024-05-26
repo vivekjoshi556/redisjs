@@ -13,53 +13,66 @@ const _ = new Store({});
 const parser = new Parser();
 const runner = new Runner();
 
-function processInput(input, connection) {
-	const data = input.toString();
-	const commands = parser.parse(data);
-	return result = runner.execute(commands, input, connection);
-}
-
 if(config.replication.role === "slave") {
 	const socket = net.createConnection(config.replication.port);
-	const parser = new ArrayParser();
-	let at = 1;
-	
+	const arrayParser = new ArrayParser();
+	let setupAt = 0;
+
 	// Last Empty is receiving RDB file. 
-	const handshake = [["ping"], ["replconf", "listening-port", config.port], ["replconf", "capa", "psync2"], ["psync", "?", "-1"], []];
+	// Important: Next must be sent after the response is received for previous.
+	const handshakeCommands = [
+		["ping"], 
+		["replconf", "listening-port", config.port], 
+		["replconf", "capa", "psync2"], 
+		["psync", "?", "-1"], 
+		[]
+	];
 
-	socket.write(parser.serialize(handshake[0]));
+	socket.on('data', (input) => {
+		// console.log("Input Received by Replica", input.toString());
+		let commands = parser.parse(input.toString());
+		let i = 0;
 
-	function setup() {
-		let setupRemaining = at < handshake.length;
-		if(setupRemaining) {
-			// Setup Socket for next one.
-			socket.once('data', setup);
-			if(handshake[at].length > 0) {
-				socket.write(parser.serialize(handshake[at]));
-			}
-			at++;
-		} else {
-			socket.on('data', (input) => {
-				processInput(input, '');
-			});
+		// Check how many commands are completed in setup.
+		while(setupAt < handshakeCommands.length - 1 && i < commands.length) {
+			setupAt += 1;
+			i += 1;
 		}
-	}
 
-	socket.once('data', setup);
+		// If setup wasn't completed send rest of the commands.
+		if(setupAt < handshakeCommands.length - 1) {
+			socket.write(arrayParser.serialize(handshakeCommands[setupAt]));
+		}
+		for(; i < commands.length; i++) {
+			try {
+				let {command, input} = commands[i];
+				runner.execute(command, input, '');
+			} catch (err) {}
+		}
+	});
+
+	socket.write(arrayParser.serialize(handshakeCommands[0]));
 }
 
 const server = net.createServer((connection) => {
-	connection.on("data", (input) => {
-		processInput(input, connection);
 
-		// Handle multiple responses.
-		if(!Array.isArray(result)) {
-			result = [result];
-		}
+	connection.on("data", (data) => {
+		try {
+			// buff
+			let commands = parser.parse(data.toString());
+			for(let {command, input} of commands) {
+				let result = runner.execute(command, input, connection);
 
-		for(let item of result) {
-			connection.write(item);
-		}
+				// Handle multiple responses for each command.
+				if(!Array.isArray(result)) {
+					result = [result];
+				}
+
+				for(let item of result) {
+					connection.write(item);
+				}
+			}
+		} catch (err) {}
 	});
 
 	connection.on("close", () => {

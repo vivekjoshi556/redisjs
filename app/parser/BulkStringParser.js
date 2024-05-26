@@ -1,5 +1,16 @@
 module.exports = class BulkStringParser {
   parse(lines, at) {
+    
+    // Handle RDB file which might have other command at end.
+    // let len = parseInt(lines[at].substring(1));
+    if(lines[at + 1].startsWith("REDIS0011")) {
+      // Should work based on length of expected vs actual.
+      let trailIdx = lines[at + 1].indexOf('*');
+      if(trailIdx !== -1) {
+        lines.splice(at + 2, 0, lines[at + 1].substring(trailIdx));
+        lines[at + 1] = lines[at + 1].substring(0, trailIdx);
+      }
+    }
     return {
       next: at + 2, 
       result: lines[at + 1]

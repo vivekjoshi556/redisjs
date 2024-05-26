@@ -46,8 +46,13 @@ if(config.replication.role === "slave") {
 		for(; i < commands.length; i++) {
 			try {
 				let {command, input} = commands[i];
-				runner.execute(command, input, '');
-			} catch (err) {}
+				let result = runner.execute(command, input, '');
+				if(command[0].toLowerCase() === 'replconf') {
+					socket.write(result);
+				}
+			} catch (err) {
+				console.log(err);
+			}
 		}
 	});
 
@@ -69,10 +74,13 @@ const server = net.createServer((connection) => {
 				}
 
 				for(let item of result) {
-					connection.write(item);
+					if(item !== null) 
+						connection.write(item);
 				}
 			}
-		} catch (err) {}
+		} catch (err) {
+			console.log(err);
+		}
 	});
 
 	connection.on("close", () => {

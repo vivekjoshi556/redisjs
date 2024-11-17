@@ -29,7 +29,6 @@ if(config.replication.role === "slave") {
 	];
 
 	socket.on('data', (input) => {
-		// console.log("Input Received by Replica", input.toString());
 		let commands = parser.parse(input.toString());
 		let i = 0;
 
@@ -69,7 +68,6 @@ const server = net.createServer((connection) => {
 			for(let {command, input} of commands) {
 				let result = runner.execute(command, input, connection);
 
-				console.log(command);
 				// Handle multiple responses for each command.
 				if(!Array.isArray(result)) {
 					result = [result];

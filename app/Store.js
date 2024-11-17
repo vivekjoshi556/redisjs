@@ -1,3 +1,6 @@
+/**
+ * This is the singleton implementation of the store where data is saved.
+ */
 module.exports = class Store {
   static instance;
 

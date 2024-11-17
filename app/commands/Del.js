@@ -9,10 +9,14 @@ module.exports = class Del {
 
     let [_, key] = commands;
 
-    let store = new Store();
-    delete store.data[key];
+    this.executeCommand(key);
 
     let parser = new StringParser();
     return parser.serialize("OK");
+  }
+
+  executeCommand(key) {
+    let store = new Store();
+    delete store.data[key];
   }
 }

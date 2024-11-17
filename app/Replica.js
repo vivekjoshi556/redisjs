@@ -1,5 +1,5 @@
 /**
- * This is the class which is used when the instance is started as a replica.
+ * This is the class which is keeps a list of all the replica connections.
  */
 module.exports = class Replica {
   static instance;

@@ -4,6 +4,7 @@ const Runner = require("./Runner");
 const Store = require("./Store");
 const Config = require("./Config");
 const { ArrayParser } = require("./parser/");
+const { randomString } = require("./util");
 
 const config = new Config(process.argv);
 
@@ -60,6 +61,8 @@ if(config.replication.role === "slave") {
 }
 
 const server = net.createServer((connection) => {
+	connection['transaction'] = false;
+	connection['transactionQueue'] = [];
 
 	connection.on("data", (data) => {
 		try {

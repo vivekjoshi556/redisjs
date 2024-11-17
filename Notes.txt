@@ -1,2 +1,7 @@
 ! Improvement Comments:
   - Should work based on length of expected vs actual: BulkStringParser.
+
+! Singleton Might Not be Good for Store:
+  - Thread Safety Concerns.
+  - Difficulty in testing ????
+  - Maybe try looking into DI...

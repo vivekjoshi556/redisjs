@@ -1,11 +1,16 @@
-const {StringParser, ArrayParser, BulkStringParser} = require('./parser/')
+const {StringParser, ArrayParser, BulkStringParser, IntParser} = require('./parser/')
 
 const RESPTypes = {
 	'*': ArrayParser,
 	'+': StringParser,
 	'$': BulkStringParser,
+	':': IntParser,
 };
 
+/**
+ * This is the parser classes and this will be responsible for taking the input str request
+ * and then converting them to commands that our program can understand.
+ */
 module.exports = class Parser {
 	parse(data) {
 		let result = [], next = 0;

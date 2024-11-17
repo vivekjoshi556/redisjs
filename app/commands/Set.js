@@ -5,12 +5,19 @@ const Del = require("./Del");
 
 module.exports = class Set { 
   execute(commands) {
+    // ['SET', <key>, <value>, [<px>, <expiry>]]
     if(commands.length < 3) {
       throw new Error("Not enough arguments");
     }
 
     let [_, key, value, __ , expiry] = commands;
 
+    this.executeCommand(key, value, expiry);
+    let parser = new StringParser();
+    return parser.serialize("OK");
+  }
+
+  executeCommand(key, value, expiry) {
     let store = new Store();
     store.data[key] = {value}
 
@@ -25,11 +32,8 @@ module.exports = class Set {
         // Emit the event for replicas.
         replicateEvent.emit('replicate', arrayParser.serialize(['del', key]));
         const del = new Del();
-        del.execute(key);
+        del.executeCommand(key);
       }, parseInt(expiry));
     }
-
-    let parser = new StringParser();
-    return parser.serialize("OK");
   }
 }

@@ -1,6 +1,6 @@
 const Replica = require("./Replica");
 const replicateEvent = require("./ReplicateEvent");
-const {Echo, Ping, Del, Command, Set, Get, Info, ReplConf, Psync} = require('./commands/');
+const {Echo, Ping, Del, Command, Set, Get, Info, ReplConf, Psync, Incr} = require('./commands/');
 
 const commandFactory = {
   "set": Set,
@@ -9,6 +9,7 @@ const commandFactory = {
   "echo": Echo,
   "ping": Ping,
   "info": Info,
+  "incr": Incr,
   "command": Command,
   "replconf": ReplConf,
   "psync": Psync,
@@ -16,6 +17,10 @@ const commandFactory = {
 
 const writeCommands = ["set", "del"]
 
+/**
+ * This is the runner class that takes output commands from Parser
+ * and executes those commands.
+ */
 module.exports = class Runner {
   execute(command, input, connection) {
     let commandName = command[0].toLowerCase();

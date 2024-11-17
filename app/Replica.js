@@ -1,3 +1,6 @@
+/**
+ * This is the class which is used when the instance is started as a replica.
+ */
 module.exports = class Replica {
   static instance;
 

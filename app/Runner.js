@@ -40,7 +40,7 @@ module.exports = class Runner {
     // If part of ongoing transaction
     if(connection['transaction'] && !['exec', 'discard'].includes(commandName)) {
       connection['transactionQueue'].push({command, input});
-      return new StringParser().serialize("Queued");
+      return new StringParser().serialize("QUEUED");
     }
     
     if(commandName === 'multi') { // Starting a transaction.

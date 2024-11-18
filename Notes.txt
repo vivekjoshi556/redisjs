@@ -5,3 +5,7 @@
   - Thread Safety Concerns.
   - Difficulty in testing ????
   - Maybe try looking into DI...
+
+! Propagating To Replica:
+  - Transactions:
+  - Look at writeCommands in commands/index.js

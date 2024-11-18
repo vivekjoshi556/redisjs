@@ -1,7 +1,7 @@
-const replicateEvent = require("../ReplicateEvent");
-const Store = require("../Store");
-const { StringParser, ArrayParser } = require("../parser/");
 const Del = require("./Del");
+const Store = require("../Store");
+const replicateEvent = require("../ReplicateEvent");
+const { StringParser, ArrayParser } = require("../parser/");
 
 module.exports = class Set { 
   execute(commands) {
@@ -20,6 +20,7 @@ module.exports = class Set {
   executeCommand(key, value, expiry) {
     let store = new Store();
     store.data[key] = {value}
+    store.data[key].type = "string";
 
     if(expiry) {
       const time = new Date().getTime();

@@ -1,7 +1,7 @@
-const Store = require("../Store");
-const { IntParser, ErrParser } = require("../parser");
 const Get = require("./Get");
 const Set = require("./Set");
+const { isValidNum } = require("../util");
+const { IntParser, ErrParser } = require("../parser");
 
 module.exports = class Incr { 
   execute(commands) {
@@ -10,8 +10,6 @@ module.exports = class Incr {
     }
 
     let key = commands[1];
-
-    const store = new Store();
 
     const get = new Get();
     const set = new Set();
@@ -26,7 +24,7 @@ module.exports = class Incr {
       result = 1;
     } else {
       // If the value is not a valid number.
-      if(Number.isNaN(parseInt(result))) {
+      if(!isValidNum(result)) {
         return errParser.serialize('ERR', 'value is not an integer or out of range');
       }
       else {

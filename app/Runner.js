@@ -1,29 +1,7 @@
 const Replica = require("./Replica");
 const replicateEvent = require("./ReplicateEvent");
-const {Echo, Ping, Del, Command, Set, Get, Info, ReplConf, Psync, Incr, Multi, Exec, Discard} = require('./commands/');
 const { ErrParser, StringParser } = require("./parser");
-
-const commandFactory = {
-  "set": Set,
-  "get": Get,
-  "del": Del,
-  "echo": Echo,
-  "ping": Ping,
-  "info": Info,
-  "incr": Incr,
-  "exec": Exec,
-  "multi": Multi,
-  "discard": Discard,
-  "command": Command,
-  "replconf": ReplConf,
-  "psync": Psync,
-}
-
-/**
- * List of commands that will change the DB.
- * These need to be propagated to replicas.
- */
-const writeCommands = ["set", "del"]
+const { commandFactory, writeCommands } = require('./commands/');
 
 /**
  * This is the runner class that takes output commands from Parser
@@ -58,7 +36,7 @@ module.exports = class Runner {
 
     let commandRunner = commandFactory[commandName];
     let cmdRunner = new commandRunner({connection, runner: this});
-    
+
     return cmdRunner.execute(command);
   }
 }

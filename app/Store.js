@@ -4,7 +4,7 @@
 module.exports = class Store {
   static instance;
 
-  constructor(data) {
+  constructor(data={}) {
     if (!Store.instance) {
       Store.instance = this;
       this.data = data;

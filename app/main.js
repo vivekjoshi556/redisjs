@@ -4,12 +4,11 @@ const Runner = require("./Runner");
 const Store = require("./Store");
 const Config = require("./Config");
 const { ArrayParser } = require("./parser/");
-const { randomString } = require("./util");
 
 const config = new Config(process.argv);
 
 // Redis Store
-const _ = new Store({});
+const _ = new Store();
 
 const parser = new Parser();
 const runner = new Runner();

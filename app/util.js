@@ -10,6 +10,11 @@ function randomString(length) {
   return result;
 }
 
+function isValidNum(value) {
+  return !Number.isNaN(parseInt(value));
+}
+
 module.exports = {
-  randomString
+  randomString,
+  isValidNum
 }

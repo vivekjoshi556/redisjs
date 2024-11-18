@@ -1,34 +1,25 @@
-[![progress-banner](https://backend.codecrafters.io/progress/redis/c406992a-7fa3-4a6f-bb36-5a18e2d9b40d)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
+# RedisJS
+This is a JS implementation of Redis from scratch strictly for learning purposes. I am doing this as part of a [Codecrafters](http://codecrafters.io) challenge.
 
-This is a starting point for JavaScript solutions to the
-["Build Your Own Redis" Challenge](https://codecrafters.io/challenges/redis).
+This is an attempt to learn about various design patterns and using them is real world scenarios. If you have any suggestions about what I could have done better please create an issue.
 
-In this challenge, you'll build a toy Redis clone that's capable of handling
-basic commands like `PING`, `SET` and `GET`. Along the way we'll learn about
-event loops, the Redis protocol and more.
 
-**Note**: If you're viewing this repo on GitHub, head over to
-[codecrafters.io](https://codecrafters.io) to try the challenge.
+## Overview
+There are multiple pieces in this challenge, but primarily it is composed of `basic` and `extensions`.
+### Basic:
+This is the basic functionalities of redis like starting the redis server and implementing basic commands and features like:
+- Ping
+- Echo
+- Set (with and without expiry)
+- Get
+- Handling concurrent Clients.
 
-# Passing the first stage
+### Extensions:
+Then there are extensions. These are specific features that we have to implement. As of today there are 4 extensions as `beta` for Redis.
+- Replication
+- Transactions
+- Streams
+- RDB Persistence
 
-The entry point for your Redis implementation is in `app/main.js`. Study and
-uncomment the relevant code, and push your changes to pass the first stage:
-
-```sh
-git add .
-git commit -m "pass 1st stage" # any msg
-git push origin master
-```
-
-That's all!
-
-# Stage 2 & beyond
-
-Note: This section is for stages 2 and beyond.
-
-1. Ensure you have `node (16)` installed locally
-1. Run `./spawn_redis_server.sh` to run your Redis server, which is implemented
-   in `app/main.js`.
-1. Commit your changes and run `git push origin master` to submit your solution
-   to CodeCrafters. Test output will be streamed to your terminal.
+## Implementation Status:
+I have already completed the Basic, Replication & Transactions stages. I will be working on Streams next.

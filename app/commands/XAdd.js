@@ -38,7 +38,6 @@ module.exports = class XAdd {
     let value = get.executeCommand(key);
     let lastId = value === null ? value : Object.keys(value)[Object.keys(value).length - 1];
 
-    console.log(lastId);
     for(let entry of entries) {
       let entryId = entry['id'];
       let data = entry['data'];
@@ -55,11 +54,7 @@ module.exports = class XAdd {
     return lastId
   }
 
-// XADD grape 1-1 pineapple mango
-// XADD grape 1-2 strawberry grape
-// XADD grape 1-2 blueberry banana
   getId(id, lastId) {
-    console.log(id, lastId);
     if(id === "0-0")
       throw new Error("The ID specified in XADD must be greater than 0-0");
 

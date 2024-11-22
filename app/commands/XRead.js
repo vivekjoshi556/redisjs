@@ -1,17 +1,35 @@
 const Store = require("../Store");
+const { sleep } = require("../util");
 const { ArrayParser } = require("../parser");
 
-module.exports = class XRange {
-  execute(commands) {
-    if(commands.length < 2) {
+module.exports = class XRead {
+  async execute(commands) {
+    if(commands.length < 4) {
       throw new Error("Not enough arguments");
     }
-    
-    let streamName = commands[1];
-    let startKey = commands.length < 3 ? "-" : commands[2];
-    let endKey = commands.length < 4 ? "+" : commands[3];
 
-    let result = this.executeCommand(streamName, startKey, endKey);
+    if(commands.length % 2 !== 0) {
+      throw new Error("Improper command arguments.");
+    }
+
+    let blockIdx = commands.indexOf("block");
+    let waitTime = (blockIdx !== -1) ? Number(commands[blockIdx + 1]) : 0;
+
+    await sleep(waitTime);
+    
+    let result= [];
+    let streamIdx = commands.indexOf("streams");
+    let streamsToRead = (commands.length - streamIdx - 1) / 2;
+    
+    for(let i = streamIdx + 1; i <= streamIdx + streamsToRead; i++) {
+      let res = this.executeCommand(commands[i], commands[i + streamsToRead])
+      if(res.length === 0) {
+        res = null;
+      }
+
+      result.push([commands[i], res]);
+    }
+    
     let parser = new ArrayParser();
     result = parser.serialize(result);
     return result;
@@ -20,13 +38,13 @@ module.exports = class XRange {
   /**
    * ! What happens if the key doesn't exist.
    */
-  executeCommand(streamName, startKey, endKey) {
+  executeCommand(streamName, startKey) {
     let store = new Store();
     let stream = store.data[streamName];
     let items = Object.keys(stream.value);
     
     if (startKey !== "-") {
-      startKey = items.includes(startKey) ? items.indexOf(startKey) : this.findNextKey(startKey);
+      startKey = items.includes(startKey) ? items.indexOf(startKey) + 1 : this.findNextKey(startKey);
     } else {
       startKey = 0;
     }
@@ -34,8 +52,6 @@ module.exports = class XRange {
     let result = []
 
     for (let idx = startKey; idx < items.length; idx++) {
-      if (endKey !== "+" && items[idx] > endKey) break;
-
       result.push([items[idx], stream.value[items[idx]]]);
     }
 
@@ -49,7 +65,7 @@ module.exports = class XRange {
     while (low <= high) {
       const mid = Math.floor((low + high) / 2);
       if (sortedList[mid] === key) {
-        return mid;
+        return mid + 1;
       }
 
       if (sortedList[mid] < key) {

@@ -8,7 +8,7 @@ const { commandFactory, writeCommands } = require('./commands/');
  * and executes those commands.
  */
 module.exports = class Runner {
-  execute(command, input, connection) {
+  async execute(command, input, connection) {
     let commandName = command[0].toLowerCase();
 
     if(!commandFactory[commandName]) {
@@ -37,7 +37,7 @@ module.exports = class Runner {
     let commandRunner = commandFactory[commandName];
     let cmdRunner = new commandRunner({connection, runner: this});
 
-    return cmdRunner.execute(command);
+    return await cmdRunner.execute(command);
   }
 }
 

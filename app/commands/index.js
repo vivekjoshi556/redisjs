@@ -10,6 +10,7 @@ const XAdd = require('./XAdd');
 const Type = require('./Type');
 const Multi = require('./Multi');
 const Psync = require('./Psync');
+const XRead = require('./XRead');
 const XRange = require('./XRange');
 const Discard = require('./Disacrd');
 const ReplConf = require('./ReplConf');
@@ -27,6 +28,7 @@ const commandFactory = {
   "type": Type,
   "xadd": XAdd,
   "multi": Multi,
+  "xread": XRead,
   "xrange": XRange,
   "discard": Discard,
   "command": Command,

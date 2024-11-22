@@ -28,7 +28,7 @@ if(config.replication.role === "slave") {
 		[]
 	];
 
-	socket.on('data', (input) => {
+	socket.on('data', async (input) => {
 		let commands = parser.parse(input.toString());
 		let i = 0;
 
@@ -45,7 +45,7 @@ if(config.replication.role === "slave") {
 		for(; i < commands.length; i++) {
 			try {
 				let {command, input} = commands[i];
-				let result = runner.execute(command, input, '');
+				let result = await runner.execute(command, input, '');
 				config.replication.slave_repl_offset += input.length;
 				if(command[0].toLowerCase() === 'replconf') {
 					socket.write(result);
@@ -63,12 +63,12 @@ const server = net.createServer((connection) => {
 	connection['transaction'] = false;
 	connection['transactionQueue'] = [];
 
-	connection.on("data", (data) => {
+	connection.on("data", async (data) => {
 		try {
 			// buff
 			let commands = parser.parse(data.toString());
 			for(let {command, input} of commands) {
-				let result = runner.execute(command, input, connection);
+				let result = await runner.execute(command, input, connection);
 
 				// Handle multiple responses for each command.
 				if(!Array.isArray(result)) {

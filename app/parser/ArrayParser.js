@@ -33,6 +33,10 @@ module.exports = class ArrayParser {
     let result = `*${data.length}\r\n`;
 
     for (let item of data) {
+      if (Array.isArray(item)) {
+        result += this.serialize(item);
+        continue;
+      }
       if (typeof item === "number") {
         item = item.toString();
       }

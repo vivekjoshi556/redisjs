@@ -14,7 +14,12 @@ function isValidNum(value) {
   return !Number.isNaN(parseInt(value));
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 module.exports = {
+  sleep,
   randomString,
   isValidNum
 }

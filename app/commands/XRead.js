@@ -13,22 +13,16 @@ module.exports = class XRead {
     }
 
     let blockIdx = commands.indexOf("block");
-    let waitTime = (blockIdx !== -1) ? Number(commands[blockIdx + 1]) : 0;
-
-    await sleep(waitTime);
-    
-    let result= [];
+    let waitTime = (blockIdx !== -1) ? Number(commands[blockIdx + 1]) : -1; // -1 will be coerced by setTimeout.
     let streamIdx = commands.indexOf("streams");
     let streamsToRead = (commands.length - streamIdx - 1) / 2;
     
+    let promises = [];
     for(let i = streamIdx + 1; i <= streamIdx + streamsToRead; i++) {
-      let res = this.executeCommand(commands[i], commands[i + streamsToRead])
-      if(res.length === 0) {
-        res = null;
-      }
-
-      result.push([commands[i], res]);
+      promises.push(this.executeCommand(commands[i], commands[i + streamsToRead], waitTime));
     }
+
+    let result = await Promise.all(promises);
     
     let parser = new ArrayParser();
     result = parser.serialize(result);
@@ -38,11 +32,25 @@ module.exports = class XRead {
   /**
    * ! What happens if the key doesn't exist.
    */
-  executeCommand(streamName, startKey) {
+  async executeCommand(streamName, startKey, waitTime) {
     let store = new Store();
     let stream = store.data[streamName];
+    const numKeys = Object.keys(stream.value).length;
+
+    if(startKey === "$") {
+      startKey = Object.keys(stream.value)[numKeys - 1];
+    }
+
+    if (waitTime === 0) {
+      while(Object.keys(stream.value).length === numKeys) {
+        startKey = Object.keys(stream.value)[numKeys - 1];
+        await sleep(1000);
+      }
+    }
+
+    await sleep(waitTime);
     let items = Object.keys(stream.value);
-    
+
     if (startKey !== "-") {
       startKey = items.includes(startKey) ? items.indexOf(startKey) + 1 : this.findNextKey(startKey);
     } else {
@@ -55,7 +63,7 @@ module.exports = class XRead {
       result.push([items[idx], stream.value[items[idx]]]);
     }
 
-    return result;
+    return [streamName, result.length ? result : null];
   }
 
   findNextKey(sortedList, key) {

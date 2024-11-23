@@ -12,7 +12,7 @@ module.exports = class Runner {
     let commandName = command[0].toLowerCase();
 
     if(!commandFactory[commandName]) {
-      ErrParser.serialize(`Command Not Found: ${commandName}`);
+      return new ErrParser().serialize(`Command Not Found: ${commandName}`);
     }
 
     // If part of ongoing transaction
